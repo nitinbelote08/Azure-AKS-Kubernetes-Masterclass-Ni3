@@ -1,0 +1,35 @@
+stages:
+  - validate
+  - deploy
+
+variables:
+  AZURE_SUBSCRIPTION_ID: "your-subscription-id"  # Replace with your Azure subscription ID
+  AZURE_TENANT_ID: "your-tenant-id"            # Replace with your Azure tenant ID
+  RESOURCE_GROUP: "aks-rg1"
+  LOCATION: "centralus"
+  CLUSTER_NAME: "aksdemo1"
+
+validate_template:
+  stage: validate
+  image: mcr.microsoft.com/azure-cli:latest
+  script:
+    - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+    - az account set --subscription $AZURE_SUBSCRIPTION_ID
+    - az deployment group validate --resource-group $RESOURCE_GROUP --template-file arm-template-aks.json --parameters clusterName=$CLUSTER_NAME location=$LOCATION
+  only:
+    - main  # Adjust branch as needed
+
+deploy_aks:
+  stage: deploy
+  image: mcr.microsoft.com/azure-cli:latest
+  script:
+    - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+    - az account set --subscription $AZURE_SUBSCRIPTION_ID
+    - az group create --name $RESOURCE_GROUP --location $LOCATION
+    - az deployment group create --resource-group $RESOURCE_GROUP --template-file arm-template-aks.json --parameters clusterName=$CLUSTER_NAME location=$LOCATION
+    - az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME
+    - kubectl get nodes
+  only:
+    - main  # Adjust branch as needed
+  dependencies:
+    - validate_template
