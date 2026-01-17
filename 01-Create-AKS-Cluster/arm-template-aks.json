@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2023-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "clusterName": {
@@ -42,14 +42,14 @@
       "metadata": {
         "description": "The size of the Virtual Machine."
       },
-      "defaultValue": "Standard_DS2_v2"
+      "defaultValue": "Standard_D2s_v3"
     },
     "kubernetesVersion": {
       "type": "string",
       "metadata": {
         "description": "The version of Kubernetes."
       },
-      "defaultValue": "1.27.0"
+      "defaultValue": "1.29.0"
     },
     "enableAutoScaling": {
       "type": "bool",
@@ -91,7 +91,7 @@
       "metadata": {
         "description": "Enable Azure Policy."
       },
-      "defaultValue": false
+      "defaultValue": true
     },
     "availabilityZones": {
       "type": "array",
@@ -105,7 +105,7 @@
       "metadata": {
         "description": "The pricing tier for the cluster."
       },
-      "defaultValue": "free"
+      "defaultValue": "Free"
     },
     "autoUpgradeChannel": {
       "type": "string",
@@ -118,7 +118,7 @@
   "resources": [
     {
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2022-09-02-preview",
+      "apiVersion": "2023-10-01",
       "name": "[parameters('clusterName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -134,7 +134,7 @@
             "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
             "count": "[parameters('agentCount')]",
             "enableAutoScaling": "[parameters('enableAutoScaling')]",
-            "minCount": "[parameters('minCount')]",
+            "minCount": "[parameters('minCount')] ",
             "maxCount": "[parameters('maxCount')]",
             "vmSize": "[parameters('agentVMSize')]",
             "osType": "Linux",
@@ -155,7 +155,7 @@
           "omsagent": {
             "enabled": true,
             "config": {
-              "logAnalyticsWorkspaceResourceID": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', 'DefaultWorkspace'), '2020-03-01-preview').id]"
+              "logAnalyticsWorkspaceResourceID": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', 'DefaultWorkspace'), '2023-09-01').id]"
             }
           }
         }
