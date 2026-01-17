@@ -3,8 +3,8 @@ stages:
   - deploy
 
 variables:
-  AZURE_SUBSCRIPTION_ID: "your-subscription-id"  # Replace with your Azure subscription ID
-  AZURE_TENANT_ID: "your-tenant-id"            # Replace with your Azure tenant ID
+  AZURE_SUBSCRIPTION_ID: "b2841b6e-1abd-47ea-8ee4-d8b7de28c66c"  # Replace with your Azure subscription ID
+  AZURE_TENANT_ID: "fc8de7a0-ab87-4fd7-abed-7cc1735ac35f"            # Replace with your Azure tenant ID
   RESOURCE_GROUP: "aks-rg1"
   LOCATION: "centralus"
   CLUSTER_NAME: "aksdemo1"
